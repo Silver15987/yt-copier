@@ -45,10 +45,16 @@ async function initializeApp() {
   exportManager = new ExportManager();
 
   // Initialize upload server
+  // In packaged app, use app.getAppPath() for correct paths
+  const appPath = app.getAppPath();
+  const publicPath = isDev 
+    ? path.join(__dirname, '../../public')
+    : path.join(appPath, 'public');
+    
   uploadServer = new UploadServer({
     port: 3000,
     uploadDir: paths.raw,
-    publicDir: path.join(__dirname, '../../public'),
+    publicDir: publicPath,
     sessionToken: sessionManager.getToken(),
     onFileUploaded: async (fileInfo) => {
       // Classify the uploaded video
@@ -107,7 +113,9 @@ function createWindow() {
     mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../../dist/renderer/index.html'));
+    // In packaged app, use app.getAppPath() for correct paths
+    const appPath = app.getAppPath();
+    mainWindow.loadFile(path.join(appPath, 'dist/renderer/index.html'));
   }
 
   // Show window when ready
