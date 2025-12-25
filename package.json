@@ -7,7 +7,7 @@
     "dev": "concurrently -k \"npm run dev:vite\" \"npm run dev:electron\"",
     "dev:vite": "vite",
     "dev:electron": "node -e \"const http = require('http'); const check = () => http.get('http://localhost:5173', (r) => { if(r.statusCode === 200) { require('child_process').spawn('npx', ['electron', '.'], {stdio: 'inherit', shell: true}); } else setTimeout(check, 500); }).on('error', () => setTimeout(check, 500)); check();\"",
-    "build": "npm run build:vite && npx electron-builder",
+    "build": "npm run build:vite ; npx electron-builder",
     "build:vite": "vite build",
     "package": "electron-builder --win",
     "preview": "vite preview"
@@ -37,15 +37,23 @@
     "appId": "com.videosorter.app",
     "productName": "Video Sorter Manager",
     "directories": {
-      "output": "dist"
+      "output": "release"
     },
     "files": [
       "src/**/*",
-      "public/**/*"
+      "public/**/*",
+      "dist/renderer/**/*",
+      "package.json"
     ],
+    "extraMetadata": {
+      "main": "src/main/index.js"
+    },
     "win": {
-      "target": "nsis",
-      "icon": "public/icon.ico"
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     }
   }
 }
